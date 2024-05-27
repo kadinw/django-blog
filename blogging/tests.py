@@ -1,3 +1,4 @@
+#
 from django.test import TestCase
 from django.contrib.auth.models import User
 from blogging.models import Post, Category
@@ -40,3 +41,14 @@ class FrontEmdTestCase(TestCase):
                 pubdate = self.now - self.timedelta * count
                 post.publish_date = pubdate
             post.save()
+
+    def test_list_only_published(self):
+        resp = self.client.get('/')
+        resp_text = resp.content.decode(resp.charset)
+        self.asserttrue("Recent Posts" in resp_text)
+        for count in range(1, 11):
+            title = "Post %d Title" % count
+            if count < 6:
+                self.assertContains(resp, title, count=1)
+            else:
+                self.assertNotContains(resp, title)
