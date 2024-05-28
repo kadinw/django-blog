@@ -14,7 +14,7 @@ def stub_view(request, *args, **kwargs):
     return HttpResponse(body, content_type="text/plain")
 
 
-def list_view(request):
+def old_list_view(request):
     published = Post.objects.exclude(published_date__exact = None)
     posts = published.order_by('-published_date')
     template = loader.get_template('blogging/list.html')
@@ -22,7 +22,7 @@ def list_view(request):
     body = template.render(context)
     return HttpResponse(body, content_type="text/html")
 
-def old_list_view(request):
+def list_view(request):
     published = Post.objects.exclude(published_date__exact=None)
     posts = published.order_by('-published_date')
     context = {'posts': posts}
