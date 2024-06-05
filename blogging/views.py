@@ -30,7 +30,12 @@ def old_list_view(request):
 
 class PostListView(ListView):
     model = Post
-    template_name = 'polling/list.html'
+    template_name = 'blogging/list.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.exclude(published_date__isnull=True).order_by('-published_date')
 
 def list_view(request):
     published = Post.objects.exclude(published_date__exact=None)
@@ -46,8 +51,8 @@ class PostDetailView(DetailView):
         queryset = super().get_queryset()
         return queryset.exclude(published_date__isnull=True)
     
-    def get_post(self, queryset=None):
-        obj = super().get_post(queryset=queryset)
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
         if obj.published_date is None:
             raise Http404
         return obj
